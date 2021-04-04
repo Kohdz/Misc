@@ -9,15 +9,25 @@ from functools import wraps
 
 '''
 to use the downloader
-    - change title and url
-    -
+
+tags to do:
+    - &tags=nature
+    - &tags=nature+1girl+
+    - &tags=1girl+realistic+
+    - &tags=tree+1girl+
+    - &tags=cloud+1girl+
+    - &tags=landscape+1girl+
+
+    - &tags=summer+1girl+
+    - &tags=cloud+multiple_girls
 '''
 
-title = 'sweat'
-number_of_images = 5
+number_of_images = 1000 
 # endpoint = '&tags=kamurai_%28armor%29'
 
-endpoint = '&tags=sweat'
+#endpoint = '&tags=1girl+realistic+'
+endpoint = '&tags=nature+1girl+'
+title = endpoint.split('=')[1]
 
 headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0", "Accept-Encoding":"gzip, deflate", "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "DNT":"1","Connection":"close", "Upgrade-Insecure-Requests":"1"}
 
@@ -115,6 +125,8 @@ def get_urls_from_page(endpoint, page_num=1, end_page=1000):
     with open(log_name, 'a') as f:
         for url in final:
             f.write(f'{url}\n')
+        
+        f.write(f'you will be requesting {counter} images \n')
 
     return final
 
@@ -127,6 +139,10 @@ def get_main_url(urls):
     print(f'should be fetching {counter} images')
     for url in urls:
         print(f'getting from url: {url}')
+
+        if img_count % 10 == 0:
+            print(f'\n{round((img_count/counter)*100)}% Complete\n')
+
         time.sleep(1)
         r = requests.get(url, headers=headers)
         soup = BeautifulSoup(r.text, 'html.parser')
@@ -173,9 +189,7 @@ def image_downloader(img_logs, img_count, folder_name):
         img = f.readline().splitlines()
         while img:
             uncompleted = []
-            left += 1
             try:
-    
                 left += 1
                 # print(f'Downloading: {img}')
                 print(f'{round((left/right)*100)}% Complete')
